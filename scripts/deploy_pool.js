@@ -63,7 +63,7 @@ const instantiate = new MsgInstantiateContract(
     pool_name: "Test",
     beneficiary: "terra1lm3c7tldz9m08duvce3t5f3n6r2r0e33f2ewgu",
     fee_collector: "terra1lm3c7tldz9m08duvce3t5f3n6r2r0e33f2ewgu",
-    money_market: "terra15dwd5mj8v59wpj0wvt233mf5efdff808c5tkal",
+    moneymarket: "terra15dwd5mj8v59wpj0wvt233mf5efdff808c5tkal",
     dp_code_id: 148,
   }, // InitMsg
 );
@@ -71,18 +71,18 @@ const instantiate = new MsgInstantiateContract(
 const instantiateTx = await wallet.createAndSignTx({
   msgs: [instantiate],
 });
-// const instantiateTxResult = await terra.tx.broadcast(instantiateTx);
+const instantiateTxResult = await terra.tx.broadcast(instantiateTx);
 
-// console.log(instantiateTxResult);
+console.log(instantiateTxResult);
 
-// if (isTxError(instantiateTxResult)) {
-//   throw new Error(
-//     `instantiate failed. code: ${instantiateTxResult.code}, codespace: ${instantiateTxResult.codespace}, raw_log: ${instantiateTxResult.raw_log}`
-//   );
-// }
+if (isTxError(instantiateTxResult)) {
+  throw new Error(
+    `instantiate failed. code: ${instantiateTxResult.code}, codespace: ${instantiateTxResult.codespace}, raw_log: ${instantiateTxResult.raw_log}`
+  );
+}
 
-// const {
-//   instantiate_contract: { contract_address },
-// } = instantiateTxResult.logs[0].eventsByType;
+const {
+  instantiate_contract: { contract_address },
+} = instantiateTxResult.logs[0].eventsByType;
 
-// console.log(contract_address)
+console.log(contract_address)

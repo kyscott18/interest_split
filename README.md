@@ -84,5 +84,11 @@ terrad tx wasm store artifacts/core_pool.wasm --from test1 --chain-id=localterra
 terrad tx wasm instantiate 4 '{"beneficiary":"terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8","dp_code_id": 148,"fee_collector":"terra1dcegyrekltswvyy0xy69ydgxn9x8x32zdtapd8","moneymarket":"terra1sepfj7s0aeg5967uxnfk4thzlerrsktkpelm5s","pool_name":"Pylon AnchorPool"}' --from test1 --chain-id=localterra --fees=10000uluna --gas=auto --broadcast-mode=block
 ```
 
-
+### Deployed
+***Bombay***
+code_id: 32377
+contract addresses: [
+  'terra1hru34wlp6wtz0w44xe56dcacapa9d6gej5z7tq',
+  'terra1mqh0596x4w2vl7ppgka8eu7tht452jss3ky3nx'
+]
   
