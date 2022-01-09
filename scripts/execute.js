@@ -1,4 +1,5 @@
-import { LCDClient, MsgInstantiateContract, MsgStoreCode, MnemonicKey, isTxError, Coins} from '@terra-money/terra.js';
+import { LCDClient, MsgExecuteContract, MsgSend, MsgSwap, MnemonicKey, isTxError, Coin, Coins} from '@terra-money/terra.js';
+import * as fs from 'fs';
 import fetch from 'isomorphic-fetch';
 
 // Fetch gas prices and convert to `Coin` format.
@@ -26,6 +27,21 @@ const mk = new MnemonicKey({
 //   URL: 'http://localhost:1317',
 //   chainID: 'localterra'
 // });
+
+const wallet = terra.wallet(mk);
+
+const execute = new MsgExecuteContract(
+  wallet.key.accAddress, // sender
+  "terra1hru34wlp6wtz0w44xe56dcacapa9d6gej5z7tq", // contract account address
+  { deposit: {} }, // handle msg
+  { uusd: "1000000" }
+);
+
+const executeTx = await wallet.createAndSignTx({
+  msgs: [execute]
+});
+
+const executeTxResult = await terra.tx.broadcast(executeTx);
 
 const result = await terra.wasm.contractQuery(
   "terra1hru34wlp6wtz0w44xe56dcacapa9d6gej5z7tq",
