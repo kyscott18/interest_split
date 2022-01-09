@@ -191,7 +191,6 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
         .amount,
     );
     let earnable = pool_value_locked.sub(dp_total_supply);
-    let fee = earnable.div(Decimal256::from_str("5.0")?); // TODO: fix it (20%)
 
     Ok(Response::new()
         .add_messages(anchor::redeem_stable_msg(
@@ -210,28 +209,13 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
                 deps.as_ref(),
                 Coin {
                     denom: config.stable_denom.clone(),
-                    amount: earnable.sub(fee).into(),
-                },
-            )?],
-        }))
-        .add_message(CosmosMsg::Bank(BankMsg::Send {
-            to_address: deps
-                .api
-                .addr_humanize(&config.fee_collector)
-                .unwrap()
-                .to_string(),
-            amount: vec![deduct_tax(
-                deps.as_ref(),
-                Coin {
-                    denom: config.stable_denom.clone(),
-                    amount: fee.into(),
+                    amount: earnable.into(),
                 },
             )?],
         }))
         .add_attribute("action", "claim_reward")
         .add_attribute("sender", info.sender.to_string())
-        .add_attribute("amount", earnable.sub(fee).to_string())
-        .add_attribute("fee", fee.to_string()))
+        .add_attribute("amount", earnable.to_string())
 }
 
 pub fn configure(

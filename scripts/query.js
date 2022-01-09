@@ -29,7 +29,7 @@ const mk = new MnemonicKey({
 
 const result = await terra.wasm.contractQuery(
   "terra1hru34wlp6wtz0w44xe56dcacapa9d6gej5z7tq",
-  { total_deposit_amount: { } } // query msg
+  { config: { } } // query msg
 );
 
 console.log(result)
