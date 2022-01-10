@@ -54,35 +54,3 @@ const {
 console.log(code_id)
 
 console.log(wallet.key.accAddress, 'addresser')
-
-const instantiate = new MsgInstantiateContract(
-  wallet.key.accAddress,
-  wallet.key.accAddress,
-  +code_id[0], // code ID
-  {
-    pool_name: "Test",
-    beneficiary: "terra1lm3c7tldz9m08duvce3t5f3n6r2r0e33f2ewgu",
-    fee_collector: "terra1lm3c7tldz9m08duvce3t5f3n6r2r0e33f2ewgu",
-    moneymarket: "terra15dwd5mj8v59wpj0wvt233mf5efdff808c5tkal",
-    dp_code_id: 148,
-  }, // InitMsg
-);
-
-const instantiateTx = await wallet.createAndSignTx({
-  msgs: [instantiate],
-});
-const instantiateTxResult = await terra.tx.broadcast(instantiateTx);
-
-console.log(instantiateTxResult);
-
-if (isTxError(instantiateTxResult)) {
-  throw new Error(
-    `instantiate failed. code: ${instantiateTxResult.code}, codespace: ${instantiateTxResult.codespace}, raw_log: ${instantiateTxResult.raw_log}`
-  );
-}
-
-const {
-  instantiate_contract: { contract_address },
-} = instantiateTxResult.logs[0].eventsByType;
-
-console.log(contract_address)

@@ -1,8 +1,10 @@
 import { LCDClient, MsgInstantiateContract, MsgStoreCode, MnemonicKey, isTxError, Coins} from '@terra-money/terra.js';
+import * as fs from 'fs';
 import fetch from 'isomorphic-fetch';
 
 // Fetch gas prices and convert to `Coin` format.
 const gasPrices = await (await fetch('https://bombay-fcd.terra.dev/v1/txs/gas_prices')).json();
+console.log(gasPrices)
 const gasPricesCoins = new Coins(gasPrices);
 
 const terra = new LCDClient({
@@ -27,9 +29,38 @@ const mk = new MnemonicKey({
 //   chainID: 'localterra'
 // });
 
-const result = await terra.wasm.contractQuery(
-  "terra1vt8ln3dn3fu7uceyde6q67annt46cy8jvxwjlq",
-  { config: { } } // query msg
+const wallet = terra.wallet(mk);
+
+const code_id = 32425
+
+const instantiate = new MsgInstantiateContract(
+  wallet.key.accAddress,
+  wallet.key.accAddress,
+  code_id, // code ID
+  {
+    pool_name: "Test",
+    beneficiary: "terra1wjqhvta9mm20p6p4u65dq5ckg7774qmw308pq2",
+    fee_collector: "terra1lm3c7tldz9m08duvce3t5f3n6r2r0e33f2ewgu",
+    moneymarket: "terra15dwd5mj8v59wpj0wvt233mf5efdff808c5tkal",
+    dp_code_id: 148,
+  }, // InitMsg
 );
 
-console.log(result)
+const instantiateTx = await wallet.createAndSignTx({
+  msgs: [instantiate],
+});
+const instantiateTxResult = await terra.tx.broadcast(instantiateTx);
+
+console.log(instantiateTxResult);
+
+if (isTxError(instantiateTxResult)) {
+  throw new Error(
+    `instantiate failed. code: ${instantiateTxResult.code}, codespace: ${instantiateTxResult.codespace}, raw_log: ${instantiateTxResult.raw_log}`
+  );
+}
+
+const {
+  instantiate_contract: { contract_address },
+} = instantiateTxResult.logs[0].eventsByType;
+
+console.log(contract_address)

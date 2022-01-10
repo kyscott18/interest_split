@@ -86,9 +86,9 @@ terrad tx wasm instantiate 4 '{"beneficiary":"terra1dcegyrekltswvyy0xy69ydgxn9x8
 
 ### Deployed
 ***Bombay***
-code_id: 32377
+code_id: 32425
 contract addresses: [
-  'terra1hru34wlp6wtz0w44xe56dcacapa9d6gej5z7tq',
-  'terra1mqh0596x4w2vl7ppgka8eu7tht452jss3ky3nx'
+  'terra1vt8ln3dn3fu7uceyde6q67annt46cy8jvxwjlq',
+  'terra1emqzm6me89rcd4pl93kvts3rpaeczj62nhwnzg'
 ]
   

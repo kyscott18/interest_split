@@ -193,29 +193,45 @@ pub fn earn(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, Cont
     let earnable = pool_value_locked.sub(dp_total_supply);
 
     Ok(Response::new()
-        .add_messages(anchor::redeem_stable_msg(
-            deps.as_ref(),
-            &config.moneymarket,
-            &config.atoken,
-            earnable.div(epoch_state.exchange_rate).into(),
-        )?)
-        .add_message(CosmosMsg::Bank(BankMsg::Send {
-            to_address: deps
+        // .add_messages(anchor::redeem_stable_msg(
+        //     deps.as_ref(),
+        //     &config.moneymarket,
+        //     &config.atoken,
+        //     earnable.div(epoch_state.exchange_rate).into(),
+        // )?)
+        // .add_message(CosmosMsg::Bank(BankMsg::Send {
+        //     to_address: deps
+        //         .api
+        //         .addr_humanize(&config.beneficiary)
+        //         .unwrap()
+        //         .to_string(),
+        //     amount: vec![deduct_tax(
+        //         deps.as_ref(),
+        //         Coin {
+        //             denom: config.stable_denom.clone(),
+        //             amount: earnable.into(),
+        //         },
+        //     )?],
+        // }))
+        .add_message(CosmosMsg::Wasm(WasmMsg::Execute {
+          contract_addr: deps
+              .api
+              .addr_humanize(&config.dp_token)
+              .unwrap()
+              .to_string(),
+          msg: to_binary(&Cw20ExecuteMsg::Mint {
+              recipient: deps
                 .api
                 .addr_humanize(&config.beneficiary)
                 .unwrap()
                 .to_string(),
-            amount: vec![deduct_tax(
-                deps.as_ref(),
-                Coin {
-                    denom: config.stable_denom.clone(),
-                    amount: earnable.into(),
-                },
-            )?],
-        }))
+              amount: earnable.into(),
+          })?,
+          funds: vec![],
+      }))
         .add_attribute("action", "claim_reward")
         .add_attribute("sender", info.sender.to_string())
-        .add_attribute("amount", earnable.to_string())
+        .add_attribute("amount", earnable.to_string()))
 }
 
 pub fn configure(
